@@ -299,7 +299,7 @@ async function createFormComponents() {
 	// Add submit button to form
 	components.push({
 		type: "button",
-		label: "Submit",
+		label: "Create code.json metadata",
 		key: "submit",
 		disableOnInvalid: false,
 		input: true,

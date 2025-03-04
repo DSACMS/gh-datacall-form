@@ -73,21 +73,30 @@ async function populateCodeJson(data) {
 	return codeJson;
 }
 
+async function copyToClipboard(event){
+	event.preventDefault();
+	var textArea = document.getElementById("json-result");
+    textArea.select();
+	document.execCommand("copy")
+}
+
 // Creates code.json and triggers file download
 async function downloadFile(data) {
 	delete data.submit;
 	const codeJson = await populateCodeJson(data);
 
 	const jsonString = JSON.stringify(codeJson, null, 2);
-	const blob = new Blob([jsonString], { type: "application/json" });
+	// const blob = new Blob([jsonString], { type: "application/json" });
+	document.getElementById("json-result").value = jsonString;
 
-	// Create anchor element and create download link
-	const link = document.createElement("a");
-	link.href = URL.createObjectURL(blob);
-	link.download = "code.json";
+	// // Create anchor element and create download link
+	// const link = document.createElement("a");
+	// link.href = URL.createObjectURL(blob);
+	// link.download = "code.json";
 
-	// Trigger the download
-	link.click();
+	// // Trigger the download
+	// link.click();
 }
 
 window.downloadFile = downloadFile;
+window.copyToClipboard = copyToClipboard;
