@@ -73,30 +73,43 @@ async function populateCodeJson(data) {
 	return codeJson;
 }
 
-async function copyToClipboard(event){
-	event.preventDefault();
-	var textArea = document.getElementById("json-result");
-    textArea.select();
-	document.execCommand("copy")
-}
-
-// Creates code.json and triggers file download
-async function downloadFile(data) {
+// Creates code.json object
+async function createCodeJson(data) {
 	delete data.submit;
 	const codeJson = await populateCodeJson(data);
 
 	const jsonString = JSON.stringify(codeJson, null, 2);
 	// const blob = new Blob([jsonString], { type: "application/json" });
 	document.getElementById("json-result").value = jsonString;
-
-	// // Create anchor element and create download link
-	// const link = document.createElement("a");
-	// link.href = URL.createObjectURL(blob);
-	// link.download = "code.json";
-
-	// // Trigger the download
-	// link.click();
 }
 
-window.downloadFile = downloadFile;
+// Copies code.json to clipboard
+async function copyToClipboard(event){
+	event.preventDefault();
+
+	var textArea = document.getElementById("json-result");
+    textArea.select();
+	document.execCommand("copy")
+}
+
+// Triggers local file download
+async function downloadFile(event) {
+	event.preventDefault();
+
+	const codeJson = document.getElementById("json-result").value
+	const jsonObject = JSON.parse(codeJson);
+	const jsonString = JSON.stringify(jsonObject, null, 2);
+	const blob = new Blob([jsonString], { type: "application/json" });
+
+	// Create anchor element and create download link
+	const link = document.createElement("a");
+	link.href = URL.createObjectURL(blob);
+	link.download = "code.json";
+
+	// Trigger the download
+	link.click();
+}
+
+window.createCodeJson = createCodeJson;
 window.copyToClipboard = copyToClipboard;
+window.downloadFile = downloadFile;
