@@ -79,7 +79,6 @@ async function createCodeJson(data) {
 	const codeJson = await populateCodeJson(data);
 
 	const jsonString = JSON.stringify(codeJson, null, 2);
-	// const blob = new Blob([jsonString], { type: "application/json" });
 	document.getElementById("json-result").value = jsonString;
 }
 
