@@ -53,8 +53,10 @@
 		<div id="form-header"></div>
 		<div id="formio"></div>
 		<div id="output">
-			<label for="json-result">Your JSON Metadata ( <a href="#" onclick="copyToClipboard(event)"> Copy</a> | <a href="#" onclick="downloadFile(event)">Download</a> ) </label>
-        	<textarea class="form-control" rows="20" id="json-result" readonly></textarea>
+			<label for="json-result">Your JSON Metadata </label>
+        	<textarea class="form-control" rows="10" id="json-result" readonly></textarea>
+			<button type="button" class="btn btn-outline" href="#" onclick="copyToClipboard(event)">Copy</button>
+			<button type="button" class="btn btn-outline" href="#" onclick="downloadFile(event)">Download</button>
 		</div>
 	</body>
 </html>
