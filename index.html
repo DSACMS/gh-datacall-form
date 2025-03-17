@@ -40,7 +40,7 @@
 					}).then(function (form) {
 						form.on("submit", function (submission) {
 							console.log("form submission here:", submission);
-							downloadFile(submission.data);
+							createCodeJson(submission.data);
 						});
 					});
 				})
@@ -52,5 +52,11 @@
 	<body>
 		<div id="form-header"></div>
 		<div id="formio"></div>
+		<div id="output">
+			<label for="json-result">Your JSON Metadata </label>
+        	<textarea class="form-control" rows="10" id="json-result" readonly></textarea>
+			<button type="button" class="btn btn-outline" href="#" onclick="copyToClipboard(event)">Copy</button>
+			<button type="button" class="btn btn-outline" href="#" onclick="downloadFile(event)">Download</button>
+		</div>
 	</body>
 </html>
