@@ -305,15 +305,6 @@ async function createFormComponents() {
 		"input": true
 	});
 
-	components.push({
-		"label": "Git URL (optional)",
-		"disableSortingAndFiltering": false,
-		"tableView": true,
-		"key": "textField",
-		"type": "textfield",
-		"input": true
-	});
-
 	// Add submit button to form
 	components.push({
 		type: "button",

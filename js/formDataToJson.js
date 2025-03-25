@@ -91,6 +91,15 @@ async function copyToClipboard(event){
 	document.execCommand("copy")
 }
 
+// Creates PR on requested project
+async function createProjectPR(event){
+	event.preventDefault();
+
+	var textArea = document.getElementById("json-result");
+    var codeJSONObj = textArea.value.parse()
+	console.log(codeJSONObj)
+}
+
 // Triggers local file download
 async function downloadFile(event) {
 	event.preventDefault();
