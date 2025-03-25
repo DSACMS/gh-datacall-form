@@ -296,6 +296,24 @@ async function createFormComponents() {
 
 	components = createAllComponents(jsonData);
 
+	components.push({
+		"label": "GitHub API Key (optional)",
+		"disableSortingAndFiltering": false,
+		"tableView": true,
+		"key": "textField",
+		"type": "textfield",
+		"input": true
+	});
+
+	components.push({
+		"label": "Git URL (optional)",
+		"disableSortingAndFiltering": false,
+		"tableView": true,
+		"key": "textField",
+		"type": "textfield",
+		"input": true
+	});
+
 	// Add submit button to form
 	components.push({
 		type: "button",
@@ -305,6 +323,24 @@ async function createFormComponents() {
 		input: true,
 		tableView: false,
 	});
+
+	
+
+
+	// Add Create PR button to form
+	// Add submit button to form
+	/*
+	components.push({
+		type: "button",
+		label: "Generate code.json metadata and push to Repository",
+		key: "submit",
+		disableOnInvalid: false,
+		input: true,
+		tableView: false,
+	});
+	*/
+
+	
 
 	console.log(components);
 
