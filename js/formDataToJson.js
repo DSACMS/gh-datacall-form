@@ -78,6 +78,10 @@ async function createCodeJson(data) {
 	delete data.submit;
 	const codeJson = await populateCodeJson(data);
 
+	window.gh_api_key = data['gh_api_key']
+	console.log("TEST")
+	console.log(window.gh_api_key)
+
 	const jsonString = JSON.stringify(codeJson, null, 2);
 	document.getElementById("json-result").value = jsonString;
 }
@@ -96,8 +100,19 @@ async function createProjectPR(event){
 	event.preventDefault();
 
 	var textArea = document.getElementById("json-result");
-    var codeJSONObj = textArea.value.parse()
-	console.log(codeJSONObj)
+    var codeJSONObj = JSON.parse(textArea.value)
+	
+	if('gh_api_key' in window)
+	{
+		var apiKey = window.gh_api_key
+		console.log(apiKey)
+	}
+	else
+	{
+		console.error("No API key found!")
+		alert("No Api Key in submitted data!")
+	}
+	//console.log(codeJSONObj)
 }
 
 // Triggers local file download

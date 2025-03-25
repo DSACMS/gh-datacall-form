@@ -300,7 +300,7 @@ async function createFormComponents() {
 		"label": "GitHub API Key (optional)",
 		"disableSortingAndFiltering": false,
 		"tableView": true,
-		"key": "textField",
+		"key": "gh_api_key",
 		"type": "textfield",
 		"input": true
 	});
@@ -314,22 +314,6 @@ async function createFormComponents() {
 		input: true,
 		tableView: false,
 	});
-
-	
-
-
-	// Add Create PR button to form
-	// Add submit button to form
-	/*
-	components.push({
-		type: "button",
-		label: "Generate code.json metadata and push to Repository",
-		key: "submit",
-		disableOnInvalid: false,
-		input: true,
-		tableView: false,
-	});
-	*/
 
 	
 
