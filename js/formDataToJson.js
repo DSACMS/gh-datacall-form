@@ -119,7 +119,7 @@ async function createBranchOnProject(projectURL, token)
 {
 	const {owner, repo} = getOrgAndRepoArgsGitHub(projectURL);
 
-	const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs/heads/main}`,
+	const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs/heads/main`,
 		{
 			method: 'GET',
 			headers: {
@@ -175,7 +175,8 @@ async function addFileToBranch(projectURL, token, codeJSONObj)
 	const {owner, repo} = getOrgAndRepoArgsGitHub(projectURL);
 	const FILE_PATH = 'code.json'
 	const createFileApiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${FILE_PATH}`;
-	const encodedContent = Buffer.from(codeJSONObj).toString('base64');
+	const encodedContent = btoa(codeJSONObj);
+	console.log("Content: ", encodedContent);
 
 	const response = await fetch(createFileApiUrl, 
 		{
