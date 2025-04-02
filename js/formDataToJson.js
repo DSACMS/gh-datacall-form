@@ -95,7 +95,7 @@ async function copyToClipboard(event){
 	document.execCommand("copy")
 }
 
-const NEW_BRANCH = 'code-json-branch';
+const NEW_BRANCH = 'code-json-branch' + Math.random().toString(36).substring(2, 10);
 
 function getOrgAndRepoArgsGitHub(url)
 {
