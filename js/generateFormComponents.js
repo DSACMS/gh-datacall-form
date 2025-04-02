@@ -296,6 +296,7 @@ async function createFormComponents() {
 
 	components = createAllComponents(jsonData);
 
+	//Form text box to input GitHub API Key
 	components.push({
 		"label": "GitHub API Key (optional)",
 		"disableSortingAndFiltering": false,
