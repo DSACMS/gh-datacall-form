@@ -177,16 +177,22 @@ async function addFileToBranch(projectURL, token, codeJSONObj)
 	const createFileApiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${FILE_PATH}`;
 	const encodedContent = btoa(codeJSONObj);
 	console.log("Content: ", encodedContent);
+	console.log("Branch: ", NEW_BRANCH);
 
 	const response = await fetch(createFileApiUrl, 
 		{
 			method: 'PUT',
 			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': 'token'.concat(token),
+				'Accept': 'application/vnd.github+json',
+				'Authorization': 'Bearer '.concat(token),
+				'X-GitHub-Api-Version': "2022-11-28"
 			},
 			body: JSON.stringify({
 				message: "Add codejson to project",
+				committer: {
+					name: "CodeJSON formsite",
+					email: "opensource@cms.hhs.gov"
+				},
 				content: encodedContent,
 				branch: NEW_BRANCH,
 			}),
@@ -217,6 +223,7 @@ async function createPR(projectURL, token)
 			headers: {
 				'Content-Type': 'application/json',
 				'Authorization': 'token '.concat(token),
+				'X-GitHub-Api-Version': "2022-11-28"
 			},
 			body: JSON.stringify({
 				title: "Add code.json to Project",
