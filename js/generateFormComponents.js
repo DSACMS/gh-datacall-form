@@ -302,7 +302,7 @@ async function createFormComponents() {
 		"disableSortingAndFiltering": false,
 		"tableView": true,
 		"key": "gh_api_key",
-		"type": "textfield",
+		"type": "password",
 		"input": true,
 		"description": "Generate a Github API Key from here: https://github.com/settings/tokens/new .\n\
 			The token should have these permissions: \n\
