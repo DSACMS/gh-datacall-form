@@ -323,3 +323,4 @@ async function downloadFile(event) {
 window.createCodeJson = createCodeJson;
 window.copyToClipboard = copyToClipboard;
 window.downloadFile = downloadFile;
+window.createProjectPR = createProjectPR;
