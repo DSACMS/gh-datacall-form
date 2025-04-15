@@ -159,6 +159,7 @@ async function createBranchOnProject(projectURL, token)
 		else
 		{
 			console.error('Error creating new branch: ', newBranchData);
+			alert("Failed to create branch on project! Error code: ", newBranchResponse.status, ". Please check API Key permissions and try again.")
 			return false;
 		}
 	}
@@ -190,7 +191,7 @@ async function addFileToBranch(projectURL, token, codeJSONObj)
 			body: JSON.stringify({
 				message: "Add codejson to project",
 				committer: {
-					name: "CodeJSON formsite",
+					name: "codejson-generator form site",
 					email: "opensource@cms.hhs.gov"
 				},
 				content: encodedContent,
@@ -209,6 +210,7 @@ async function addFileToBranch(projectURL, token, codeJSONObj)
 	else
 	{
 		console.error('Error adding file: ', data);
+		alert("Failed to add file on project! Error code: ", response.status, ". Please check API Key permissions and try again.")
 		return false;
 	}
 }
@@ -227,7 +229,7 @@ async function createPR(projectURL, token)
 			},
 			body: JSON.stringify({
 				title: "Add code.json to Project",
-				body: "Add generated code.json file to project. Code.json was generated via a form.io form site.",
+				body: "Add generated code.json file to project. Code.json was generated via codejson-generator form site.",
 				head: NEW_BRANCH,
 				base: 'main',
 
@@ -245,6 +247,7 @@ async function createPR(projectURL, token)
 	else
 	{
 		console.error("Error creating PR!: ", data);
+		alert("Failed to create PR on project! Error code: ", response.status, ". Please check API Key permissions and try again.")
 		return false;
 	}
 }
@@ -279,18 +282,22 @@ async function createProjectPR(event){
 					}
 				}
 			}
+			else
+			{
+				console.error("Could not create branch on requested repository with the requested API key!")
+			}
 		}
 		else
 		{
 			console.error("No URL found!");
-			alert("No URL given for project!");
+			alert("No URL given for project! Please provide project URL in repositoryURL text box");
 		}
 		
 	}
 	else
 	{
 		console.error("No API key found!");
-		alert("No Api Key in submitted data!");
+		alert("No API Key in submitted data! Please provide an API key");
 	}
 	//console.log(codeJSONObj)
 }

@@ -303,7 +303,11 @@ async function createFormComponents() {
 		"tableView": true,
 		"key": "gh_api_key",
 		"type": "textfield",
-		"input": true
+		"input": true,
+		"description": "Generate a Github API Key from here: https://github.com/settings/tokens/new .\n\
+			The token should have these permissions: \n\
+			- Contents: read &write \n- Workflows: read & write\
+			- Pull requests: read & write"
 	});
 
 	// Add submit button to form
