@@ -1,4 +1,3 @@
-// We wait for DOM to be fully loaded before initializing
 document.addEventListener("DOMContentLoaded", function() {
     setupFormHandler();
     setupNotificationSystem();
@@ -158,6 +157,20 @@ function preFillFields(repoData, languages) {
     }
 
     try {
+        const currentSubmission = {}
+        
+        window.formIOInstance.components.forEach(component => {
+            if (component.components) {
+                component.components.forEach(nestedComp => {
+                    if (nestedComp.key) {
+                        currentSubmission[nestedComp.key] = nestedComp.getValue()
+                    }
+                });
+            } else if (component.key) {
+                currentSubmission[component.key] = component.getValue()
+            }
+        })
+        
         let licenses = [];
         if (repoData.license && repoData.license.spdx_id) {
             licenses.push({
@@ -166,38 +179,31 @@ function preFillFields(repoData, languages) {
             });
         }
         
-        const submission = {
-            data: {
-                name: repoData.name || '',
-                description: repoData.description || '',
-                
-                repositoryURL: repoData.html_url || '',
-                repositoryVisibility: repoData.private ? "private" : "public",
-                vcs: 'git',
-                
-                permissions: {
-                    licenses: licenses
-                },
-                
-                reuseFrequency: {
-                    forks: repoData.forks_count || 0
-                },
-                
-                languages: Object.keys(languages) || [],
-                
-                date: {
-                    created: repoData.created_at || '',
-                    lastModified: repoData.updated_at || '',
-                    metaDataLastUpdated: new Date().toISOString()
-                },
-
-                tags: repoData.topics || [],
-                
-                feedbackMechanisms: [repoData.html_url + "/issues"]
-            }
-        };
+        const newSubmission = {
+            name: repoData.name || '',
+            description: repoData.description || '',
+            repositoryURL: repoData.html_url || '',
+            repositoryVisibility: repoData.private ? "private" : "public",
+            vcs: 'git',
+            permissions: {
+                licenses: licenses
+            },
+            reuseFrequency: {
+                forks: repoData.forks_count || 0
+            },
+            languages: Object.keys(languages) || [],
+            date: {
+                created: repoData.created_at || '',
+                lastModified: repoData.updated_at || '',
+                metaDataLastUpdated: new Date().toISOString()
+            },
+            tags: repoData.topics || [],
+            feedbackMechanisms: [repoData.html_url + "/issues"]
+        }
         
-        window.formIOInstance.setSubmission(submission);
+        const mergedSubmission = { ...currentSubmission, ...newSubmission}
+
+        window.formIOInstance.setSubmission({ data: mergedSubmission })
         
     } catch (error) {
         notificationSystem.error("Error filling form fields with repository data. Please refresh and try again");
