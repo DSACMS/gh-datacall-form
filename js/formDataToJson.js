@@ -159,7 +159,7 @@ async function createBranchOnProject(projectURL, token)
 		else
 		{
 			console.error('Error creating new branch: ', newBranchData);
-			alert("Failed to create branch on project! Error code: ", newBranchResponse.status, ". Please check API Key permissions and try again.")
+			alert("Failed to create branch on project! Error code: " + newBranchResponse.status + ". Please check API Key permissions and try again.")
 			return false;
 		}
 	}
@@ -210,7 +210,7 @@ async function addFileToBranch(projectURL, token, codeJSONObj)
 	else
 	{
 		console.error('Error adding file: ', data);
-		alert("Failed to add file on project! Error code: ", response.status, ". Please check API Key permissions and try again.")
+		alert("Failed to add file on project! Error code: " + response.status + ". Please check API Key permissions and try again.")
 		return false;
 	}
 }
@@ -247,7 +247,7 @@ async function createPR(projectURL, token)
 	else
 	{
 		console.error("Error creating PR!: ", data);
-		alert("Failed to create PR on project! Error code: ", response.status, ". Please check API Key permissions and try again.")
+		alert("Failed to create PR on project! Error code: " + response.status + ". Please check API Key permissions and try again.")
 		return false;
 	}
 }
