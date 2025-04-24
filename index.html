@@ -1,5 +1,6 @@
 <html>
 	<head>
+		<meta charset="utf-8">
 		<!-- USWDS not working -->
 		<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
 		<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
@@ -13,6 +14,9 @@
 		<!-- <script src="https://cdn.form.io/formiojs/formio.full.js"></script> -->
 		<!-- <script src="https://cdn.form.io/js/formio.embed.js"></script> -->
 		<meta charset="utf-8">
+
+		<link rel="icon" type="image/x-icon" href="favicon.ico">
+		
 		<!-- Uses bootstrap for now -->
 		<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
 		<link rel="stylesheet" href="css/styles.css">
@@ -24,6 +28,7 @@
 		<!-- Render the form -->
 		<script src="js/generateFormComponents.js"></script>
 		<script src="js/formDataToJson.js"></script>
+		<script src="js/autoGenerateFields.js"></script>
 		<script type="text/javascript">
 			createFormComponents()
 				.then((components) => {
@@ -38,6 +43,7 @@
 						},
 						components: components,
 					}).then(function (form) {
+						window.formIOInstance = form;
 						form.on("submit", function (submission) {
 							console.log("form submission here:", submission);
 							createCodeJson(submission.data);
@@ -51,7 +57,22 @@
 	</head>
 	<body>
 		<div id="form-header"></div>
+
+		<div id="notification" style="display: none;">
+			<p id="notification-message"></p>
+		</div>
+		
+		<div id="auto-generation">
+			<p id="auto-generation-header"></p>
+			<form id="github-url-form">
+				<label for="repo-url">GitHub Repository URL</label><br>
+				<input type="text" id="repo-url" name="repo-url"><br>
+				<input type="submit" id="repo-url-button" value="Submit">
+			</form>
+		</div>
+
 		<div id="formio"></div>
+
 		<div id="output">
 			<label for="json-result">Your JSON Metadata </label>
         	<textarea class="form-control" rows="10" id="json-result" readonly></textarea>
@@ -59,5 +80,6 @@
 			<button type="button" class="btn btn-outline" href="#" onclick="downloadFile(event)">Download</button>
 			<button type="button" class="btn btn-outline" href="#" onclick="createProjectPR(event)">Create Pull Request</button>
 		</div>
+
 	</body>
 </html>
