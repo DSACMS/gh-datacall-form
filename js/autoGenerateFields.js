@@ -159,7 +159,7 @@ function preFillFields(repoData, languages) {
     try {
         const form = window.formIOInstance
 
-        // Updating VCS to git - will always be git 
+        // Updating VCS to git - typically always be git 
         form.getComponent('vcs').setValue('git')
 
         // Updating organization - only option available
@@ -264,14 +264,16 @@ function preFillFields(repoData, languages) {
         }
 
         // Update repositoryHost
-        if (repoData.html_url.includes('github.cms.gov')) {
-            form.getComponent('repositoryHost').setValue('github.cms.gov')
-        } else if (repoData.html_url.includes('github.com/CMSgov')) {
-            form.getComponent('repositoryHost').setValue('github.com/CMSgov')
-        } else if (repoData.html_url.includes('github.com/CMS-Enterprise')) {
-            form.getComponent('repositoryHost').setValue('github.com/CMS-Enterprise')
-        } else if (repoData.html_url.includes('github.com/DSACMS')) {
-            form.getComponent('repositoryHost').setValue('github.com/DSACMS')
+        if (repoData.html_url) {
+            if (repoData.html_url.includes('github.cms.gov')) {
+                form.getComponent('repositoryHost').setValue('github.cms.gov')
+            } else if (repoData.html_url.includes('github.com/CMSgov')) {
+                form.getComponent('repositoryHost').setValue('github.com/CMSgov')
+            } else if (repoData.html_url.includes('github.com/CMS-Enterprise')) {
+                form.getComponent('repositoryHost').setValue('github.com/CMS-Enterprise')
+            } else if (repoData.html_url.includes('github.com/DSACMS')) {
+                form.getComponent('repositoryHost').setValue('github.com/DSACMS')
+            }
         }
 
         // fields to potentially automate
