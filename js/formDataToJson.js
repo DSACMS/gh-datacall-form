@@ -166,6 +166,7 @@ async function createBranchOnProject(projectURL, token)
 	else
 	{
 		console.error('Error fetching base branch info:', data);
+		alert('Error fetching base branch info:', data);
 		return false;
 	}
 }
@@ -284,7 +285,8 @@ async function createProjectPR(event){
 			}
 			else
 			{
-				console.error("Could not create branch on requested repository with the requested API key!")
+				console.error("Could not create branch on requested repository with the requested API key!");
+				alert("Could not create branch on requested repository with the requested API key!");
 			}
 		}
 		else
