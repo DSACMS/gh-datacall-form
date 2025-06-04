@@ -150,7 +150,35 @@ async function getRepoLanguages(repoInfo) {
     }
 }
 
-function preFillFields(repoData, languages) {
+async function getLicenseURL(repoURL) {
+    const urlParts = repoURL.replace('https://github.com/', '').split('/')
+    const owner = urlParts[0]
+    const repo = urlParts[1]
+
+    try {
+        const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents`
+        const response = await fetch(apiUrl)
+
+        const files = await response.json()
+
+        const licenseFile = files.find(file => {
+            const fileName = file.name.toLowerCase()
+            return fileName.startsWith('license') 
+        })
+
+        if (licenseFile) {
+            return `${repoURL}/blob/main/${licenseFile.name}`
+        }
+
+        return `${repoURL}/blob/main/LICENSE`
+
+    } catch (error) {
+        console.error('Could not check license via API:', error.message)
+        return `${repoURL}/blob/main/LICENSE`
+    }
+}
+
+async function preFillFields(repoData, languages) {
     if (!window.formIOInstance) {
         notificationSystem.error("Form interface not initialized. Please refresh and try again.");
         return;
@@ -198,10 +226,11 @@ function preFillFields(repoData, languages) {
             const currentPermissions = permissionsComp.getValue() || {};
 
             currentPermissions.licenses = currentPermissions.licenses || [];
+            const licenseURL = await getLicenseURL(repoData.html_url)
 
             const licenseObj = {
                 name: repoData.license.spdx_id,
-                URL: repoData.html_url + "/blob/main/LICENSE"
+                URL: licenseURL
             };
 
             currentPermissions.licenses = [licenseObj];
