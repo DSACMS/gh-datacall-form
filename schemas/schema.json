@@ -62,36 +62,57 @@
                 "type": "string",
                 "description": "What Office or Program do you belong to?"
             },
-            "Resource Name": {
-                "type": "array",
-                "description": "Names of repositories, codespaces, or resources funded by your office in the last 10 years (please list the most recent first). Include any HHS-contracted repository, fellowship repository, and any other resource that may not currently be accessible to HHS",
-                "items": {
-                    "type": "string"
-                }
+            "Resource Information": {
+                "type": "object",
+                "description": "An object containing description of the usage/restrictions regarding the release",
+                "properties": {
+                    "Basic Information": {
+                        "type": "array",
+                        "description": "License(s) for the release",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "Resource Name": {
+                                    "type": "string",
+                                    "description": "Names of repositories, codespaces, or resources funded by your office in the last 10 years"
+                                },
+                                "Resource Link": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "description": "Links to repositories, codespaces, or resources"
+                                },
+                                "Date Created": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "description": "Date Created"
+                                },
+                                "Status": {
+                                    "type": "string",
+                                    "description": "Project status",
+                                    "enum": ["Ongoing", "Ended"]
+                                },
+                                "Date Ended": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "description": "Date Ended (if applicable)"
+                                }
+                            },
+                            "required": [
+                                "Resource Name",
+                                "Resource Link",
+                                "Date Created",
+                                "Status",
+                                "Date Ended"
+                            ]
+                        }
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "Resource Information"
+                ]
             },
-            "Resource Link": {
-                "type": "array",
-                "format": "uri",
-                "description": "Links to repositories, codespaces, or resources",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "Date Created": {
-                "type": "string",
-                "format": "date-time",
-                "description": "Date Created"
-            },
-            "Status": {
-                "type": "string",
-                "description": "Project status",
-                "enum": ["Ongoing", "Ended"]
-            },
-            "Date Ended": {
-                "type": "string",
-                "format": "date-time",
-                "description": "Date Ended (if applicable)"
-            },
+
             "Management Type": {
                 "type": "string",
                 "description": "Management type",
