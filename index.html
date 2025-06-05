@@ -57,28 +57,14 @@
 	<body>
 		<div id="form-header"></div>
 
-		<div id="notification" style="display: none;">
-			<p id="notification-message"></p>
-		</div>
-		
-		<div id="auto-generation">
-			<p id="auto-generation-header"></p>
-			<form id="github-url-form">
-				<label for="repo-url">GitHub Repository URL</label><br>
-				<input type="text" id="repo-url" name="repo-url"><br>
-				<input type="submit" id="repo-url-button" value="Submit">
-			</form>
-		</div>
-
 		<div id="formio"></div>
 
 		<div id="output">
-			<label for="json-result">Your JSON Metadata </label>
+			<label for="json-result">Your Form Data </label>
         	<textarea class="form-control" rows="10" id="json-result" readonly></textarea>
 			<button type="button" class="btn btn-outline" href="#" onclick="copyToClipboard(event)">Copy</button>
 			<button type="button" class="btn btn-outline" href="#" onclick="downloadFile(event)">Download</button>
 			<button type="button" class="btn btn-outline" href="#" onclick="createProjectPR(event)">Create Pull Request</button>
-			<button type="button" class="btn btn-outline" href="#" onclick="emailFile(event)">Email</button>
 		</div>
 
 	</body>
