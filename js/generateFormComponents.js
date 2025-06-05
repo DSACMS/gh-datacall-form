@@ -283,10 +283,7 @@ function createAllComponents(schema, prefix = "") {
 				fieldComponent.components = createAllComponents(value, fullKey);
 			}
 			else if (fieldComponent.type === "datagrid") {
-				console.log("datagrid key at play:", key);
-				console.log(fieldComponent.components, "BEFORE checking fieldComponents here");
 				fieldComponent.components[0].components = createAllComponents(value.items, fullKey);
-				console.log(fieldComponent.components, "AFTER checking fieldComponents here");
 			}
 
 			components.push(fieldComponent);
@@ -325,7 +322,7 @@ async function createFormComponents() {
 	// Add submit button to form
 	components.push({
 		type: "button",
-		label: "Generate your form!",
+		label: "Generate your response!",
 		key: "submit",
 		disableOnInvalid: false,
 		input: true,
