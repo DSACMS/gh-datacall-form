@@ -322,7 +322,37 @@ async function downloadFile(event) {
 	link.click();
 }
 
+// Triggers email(mailtolink)
+async function emailFile(event) {
+	event.preventDefault();
+
+	const codeJson = document.getElementById("json-result").value
+	const jsonObject = JSON.parse(codeJson);
+	
+    try {
+        const cleanData = {...jsonObject};
+        delete cleanData.submit;
+
+        const jsonString = JSON.stringify(cleanData, null, 2);
+
+        const subject = "Code.json generator Results";
+        const body = `Hello,\n\nHere are the code.json results:\n\n${jsonString}\n\nThank you!`;
+
+        const recipients = ["opensource@cms.hhs.gov"];
+
+        const mailtoLink = `mailto:${recipients}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        window.location.href = mailtoLink;
+
+        console.log("Email client opened");
+    } catch {
+        console.error("Error preparing email:", error);
+        showNotificationModal("Error preparing email. Please try again or copy the data manually.", 'error');
+    }
+}
+
 window.createCodeJson = createCodeJson;
 window.copyToClipboard = copyToClipboard;
 window.downloadFile = downloadFile;
 window.createProjectPR = createProjectPR;
+window.emailFile = emailFile;
