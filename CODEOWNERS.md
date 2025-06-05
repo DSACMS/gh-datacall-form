@@ -1,8 +1,8 @@
 # Code Owners
+
 <!-- TODO: Who are the points of contact in your project who are responsible/accountable for the project? This can often be an engineering or design manager or leader, who may or may not be the primary maintainers of the project. List them by GitHub Username-->
 
-- natalialuzuriaga
-
+- [@natalialuzuriaga](https://github.com/natalialuzuriaga)
 
 ## Repo Domains
 
@@ -28,5 +28,5 @@ To set up GitHub teams:
 
 -->
 
-/docs/ {Git usernames of documentation owners}  
-/frontend/ {Git usernames of frontend owners}
+/css, /js [@natalialuzuriaga](https://github.com/natalialuzuriaga)
+/schemas [@natalialuzuriaga](https://github.com/natalialuzuriaga) [@decause-gov](https://github.com/decause-gov)

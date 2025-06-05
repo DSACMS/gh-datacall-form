@@ -22,6 +22,14 @@ function transformArrayToOptions(arr) {
 	}));
 }
 
+// Function that handles validation object needed for each form component
+function determineValidation(fieldName, fieldObject, requiredArray){
+	return {
+		"required": requiredArray.includes(fieldName)
+	}
+}
+
+// Function that determines type of form component based on field
 function determineType(field) {
 	if (field.type === "object") {
 		return "container";
@@ -41,6 +49,9 @@ function determineType(field) {
 		return "radio";
 	} else if (field.type === "number") {
 		return "number";
+	}
+	else if (field.type === "integer") {
+		return "integer";
 	} else if (field.type === "boolean") {
 		return "select-boolean";
 	} else if (field.type === "string" || field.type.includes("string")) {
@@ -52,8 +63,9 @@ function determineType(field) {
 }
 
 // Creates Form.io component based on json field type
-function createComponent(fieldName, fieldObject) {
+function createComponent(fieldName, fieldObject, requiredArray) {
 	const componentType = determineType(fieldObject);
+	const validate = determineValidation(fieldName, fieldObject, requiredArray);
 	switch (componentType) {
 		case "textfield":
 			return {
@@ -61,7 +73,8 @@ function createComponent(fieldName, fieldObject) {
 				key: fieldName,
 				label: fieldName,
 				input: true,
-				description: fieldObject["description"]
+				description: fieldObject["description"],
+				validate
 			};
 		case "tags":
 			return {
@@ -72,7 +85,8 @@ function createComponent(fieldName, fieldObject) {
 				key: fieldName,
 				type: "tags",
 				input: true,
-				description: fieldObject["description"]
+				description: fieldObject["description"],
+				validate
 			};
 		case "number":
 			return {
@@ -88,7 +102,26 @@ function createComponent(fieldName, fieldObject) {
 				key: fieldName,
 				type: "number",
 				input: true,
-				description: fieldObject["description"]
+				description: fieldObject["description"],
+				validate
+			};
+		case "integer":
+			return {
+				label: fieldName,
+				applyMaskOn: "change",
+				mask: false,
+				tableView: false,
+				delimiter: false,
+				requireDecimal: false,
+				decimalLimit: 0,
+				inputFormat: "plain",
+				truncateMultipleSpaces: false,
+				validateWhenHidden: false,
+				key: fieldName,
+				type: "number",
+				input: true,
+				description: fieldObject["description"],
+				validate
 			};
 		case "radio":
 			var options = transformArrayToOptions(fieldObject.enum);
@@ -104,6 +137,7 @@ function createComponent(fieldName, fieldObject) {
 				type: "radio",
 				input: true,
 				description: fieldObject["description"],
+				validate
 			};
 		case "selectboxes":
 			var options = transformArrayToOptions(fieldObject.items.enum);
@@ -118,7 +152,8 @@ function createComponent(fieldName, fieldObject) {
 				type: "selectboxes",
 				input: true,
 				inputType: "checkbox",
-				description: fieldObject["description"]
+				description: fieldObject["description"],
+				validate
 			};
 		case "datetime":
 			return {
@@ -128,8 +163,7 @@ function createComponent(fieldName, fieldObject) {
 					disableWeekends: false,
 					disableWeekdays: false
 				},
-				enableMinDateInput: false,
-				enableMaxDateInput: false,
+				enableTime: false,
 				validateWhenHidden: false,
 				key: fieldName,
 				type: "datetime",
@@ -141,18 +175,13 @@ function createComponent(fieldName, fieldObject) {
 					useLocaleSettings: false,
 					allowInput: true,
 					mode: "single",
-					enableTime: true,
 					noCalendar: false,
-					format: "yyyy-MM-dd hh:mm a",
-					hourIncrement: 1,
-					minuteIncrement: 1,
-					time_24hr: false,
-					minDate: null,
+					format: "yyyy-MM-dd",
 					disableWeekends: false,
 					disableWeekdays: false,
-					maxDate: null
 				},
-				description: fieldObject["description"]
+				description: fieldObject["description"],
+				validate
 			};
 		case "select-boolean":
 			return {
@@ -175,17 +204,21 @@ function createComponent(fieldName, fieldObject) {
 				key: fieldName,
 				type: "select",
 				input: true,
-				description: fieldObject["description"]
+				description: fieldObject["description"],
+				validate
 			};
 		case "container": 
 			return {
 				label: fieldName,
+				hideLabel: false,
 				tableView: false,
 				validateWhenHidden: false,
 				key: fieldName,
 				type: "container",
 				input: true,
-				components: []
+				components: [],
+				description: fieldObject["description"],
+				validate
 			};
 		case "datagrid":
 			return {
@@ -203,7 +236,8 @@ function createComponent(fieldName, fieldObject) {
 				key: fieldName,
 				type: "datagrid",
 				input: true,
-				components: []
+				components: [],
+				validate
 			}; 
 		default:
 			break;
@@ -216,20 +250,30 @@ function createFormHeading(title, description) {
 	container.innerHTML = `<h1>${title}</h1>\n<h2>${description}</h2>`;
 }
 
+function createAutoGenerationBox() {
+	const container = document.getElementById("auto-generation-header")
+	container.innerHTML = `<h3>Auto Generate Fields</h3> \n <h4> Please enter your repositories GitHub URL in order to automatically pre-fill some of the fields in this form! </h4> \n <h6> <i>This currently only works on <b>public</b> repositories</i> </h6>`
+}
+
 // Iterates through each json field and creates component array for Form.io
 function createAllComponents(schema, prefix = ""){
 	let components = [];
 
 	if (schema.type === "object" && schema.properties) {
 
-		const items = schema.properties.hasOwnProperty("items") ? schema.properties.items : schema.properties
+		const items = schema.properties.hasOwnProperty("items") ? schema.properties.items : schema.properties;
+		
+		let requiredArray = [];
+		if (schema.hasOwnProperty("required")) {
+			requiredArray = schema.required;
+		}
 
         for (const [key, value] of Object.entries(items)) {
             
 			console.log("key at play:", key);
 			const fullKey = prefix ? `${prefix}.${key}` : key;
 
-			let fieldComponent = createComponent(key, value);
+			let fieldComponent = createComponent(key, value, requiredArray);
 
 			if (fieldComponent.type === "container") {
 				fieldComponent.components = createAllComponents(value, fullKey);
@@ -249,23 +293,40 @@ function createAllComponents(schema, prefix = ""){
 async function createFormComponents() {
 	let components = [];
 
-	const filePath = "schemas/schema-0.0.0.json";
+	const filePath = "schemas/schema.json";
 	const jsonData = await retrieveFile(filePath);
 	console.log("JSON Data:", jsonData);
 
 	createFormHeading(jsonData["title"], jsonData["description"]);
+	createAutoGenerationBox()
 
 	components = createAllComponents(jsonData);
+
+	//Form text box to input GitHub API Key
+	components.push({
+		"label": "GitHub API Key (optional)",
+		"disableSortingAndFiltering": false,
+		"tableView": true,
+		"key": "gh_api_key",
+		"type": "password",
+		"input": true,
+		"description": "Generate a Github API Key from here: https://github.com/settings/tokens/new .\n\
+			The token should have these permissions: \n\
+			- Contents: read & write \n- Workflows: read & write\
+			- Pull requests: read & write"
+	});
 
 	// Add submit button to form
 	components.push({
 		type: "button",
-		label: "Submit",
+		label: "Generate code.json metadata",
 		key: "submit",
-		disableOnInvalid: true,
+		disableOnInvalid: false,
 		input: true,
 		tableView: false,
 	});
+
+	
 
 	console.log(components);
 

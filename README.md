@@ -1,22 +1,30 @@
 # codejson-generator
+
 Form to generate a CMS code.json
 
-## About the Project
-**{project statement}**
+https://dsacms.github.io/codejson-generator/
 
-<!--- 
+## About the Project
+
+A web form where project teams fill out information about their project and creates a completed code.json for local download to add to repositories. [Form.io](https://github.com/formio/uswds) is used for form generation.
+
+https://dsacms.github.io/codejson-generator/
+
+To produce the form, a JSON schema is ingested where it transforms each field to a Form.io component. At the moment, this is used for code.json, however this works for any JSON schema!
+
+<!---
 ### Project Vision
 **{project vision}** -->
 
-<!-- 
+<!--
 ### Project Mission
 **{project mission}** -->
 
-<!-- 
+<!--
 ### Agency Mission
 TODO: Good to include since this is an agency-led project -->
 
-<!-- 
+<!--
 ### Team Mission
 TODO: Good to include since this is an agency-led project -->
 
@@ -24,54 +32,66 @@ TODO: Good to include since this is an agency-led project -->
 
 An up-to-date list of core team members can be found in [MAINTAINERS.md](MAINTAINERS.md). At this time, the project is still building the core team and defining roles and responsibilities. We are eagerly seeking individuals who would like to join the community and help us define and fill these roles.
 
-## Documentation Index 
+## Documentation Index
 
-<!-- TODO: This is a like a 'table of contents" for your documentation. Tier 0/1 projects with simple README.md files without many sections may or may not need this, but it is still extremely helpful to provide "bookmark" or "anchor" links to specific sections of your file to be referenced in tickets, docs, or other communication channels.-->
+##### Schemas
 
-**{list of .md at top directory and descriptions}**
+- [code.json schema](./schemas/schema-0.0.0.json)
+
+##### Files
+
+- [CONTRIBUTING.md](./CONTRIBUTING.md)
+- [MAINTAINERS.md](./MAINTAINERS.md)
+- [CODEOWNERS.md](./CODEOWNERS.md)
+- [COMMUNITY_GUIDELINES.md](./COMMUNITY_GUIDELINES.md)
+- [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+- [SECURITY.md](./SECURITY.md)
+- [LICENSE](./LICENSE)
 
 ## Repository Structure
 
 <!-- TODO: Using the "tree -d" command can be a helpful way to generate this information, but, be sure to update it as the project evolves and changes over time.-->
 
-```plaintext
+```
 .
+├── css
+├── js
+└── schemas
 ```
 
-
-**{list directories and descriptions}**
-
-# Development and Software Delivery Lifecycle 
+# Development and Software Delivery Lifecycle
 
 The following guide is for members of the project team who have access to the repository as well as code contributors. The main difference between internal and external contributions is that external contributors will need to fork the project and will not be able to merge their own pull requests. For more information on contributing, see: [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Local Development
 
-<!--- TODO - with example below:
-This project is monorepo with several apps. Please see the [api](./api/README.md) and [frontend](./frontend/README.md) READMEs for information on spinning up those projects locally. Also see the project [documentation](./documentation) for more info.
--->
+To run the project locally,
+
+1. Start up a HTTP server using python: `python3 -m http.server 8000`
+2. Upon launch, here is the form! Right click to inspect to open developer tools for troubleshooting
+3. Fill out form
+4. Click submit, which triggers a local download of the completed code.json
+
+This form works with any JSON schema. To ingest a JSON schema:
+
+1. Add JSON schema to `schemas/`
+2. Update value of filePath variable in line 60 of `js/generateFormComponents.js`
 
 ## Coding Style and Linters
 
-<!-- TODO - Add the repo's linting and code style guidelines -->
-
-Each application has its own linting and testing guidelines. Lint and code tests are run on each commit, so linters and tests should be run locally before committing.
+Prettier is used for HTML/CSS and Javascript formatting. Lint and code tests are run on each commit, so linters and tests should be run locally before committing.
 
 ## Branching Model
 
-<!--- TODO - with example below:
-This project follows [trunk-based development](https://trunkbaseddevelopment.com/), which means:
-
-* Make small changes in [short-lived feature branches](https://trunkbaseddevelopment.com/short-lived-feature-branches/) and merge to `main` frequently.
-* Be open to submitting multiple small pull requests for a single ticket (i.e. reference the same ticket across multiple pull requests).
-* Treat each change you merge to `main` as immediately deployable to production. Do not merge changes that depend on subsequent changes you plan to make, even if you plan to make those changes shortly.
-* Ticket any unfinished or partially finished work.
-* Tests should be written for changes introduced, and adhere to the text percentage threshold determined by the project.
+- Make small changes in [short-lived feature branches](https://trunkbaseddevelopment.com/short-lived-feature-branches/) and merge to `main` frequently.
+- Be open to submitting multiple small pull requests for a single ticket (i.e. reference the same ticket across multiple pull requests).
+- Treat each change you merge to `main` as immediately deployable to production. Do not merge changes that depend on subsequent changes you plan to make, even if you plan to make those changes shortly.
+- Ticket any unfinished or partially finished work.
+- Tests should be written for changes introduced, and adhere to the text percentage threshold determined by the project.
 
 This project uses **continuous deployment** using [Github Actions](https://github.com/features/actions) which is configured in the [./github/workflows](.github/workflows) directory.
 
 Pull-requests are merged to `main` and the changes are immediately deployed to the development environment. Releases are created to push changes to production.
--->
 
 ## Contributing
 
@@ -79,7 +99,7 @@ Thank you for considering contributing to an Open Source project of the US Gover
 
 ## Codeowners
 
-The contents of this repository are managed by **{responsible organization(s)}**. Those responsible for the code and documentation in this repository can be found in [CODEOWNERS.md](CODEOWNERS.md).
+The contents of this repository are managed by CMS Open Source Program Office. Those responsible for the code and documentation in this repository can be found in [CODEOWNERS.md](CODEOWNERS.md).
 
 ## Community
 
@@ -87,11 +107,11 @@ The codejson-generator team is taking a community-first and open source approach
 
 We know that we can learn from a wide variety of communities, including those who will use or will be impacted by the tool, who are experts in technology, or who have experience with similar technologies deployed in other spaces. We are dedicated to creating forums for continuous conversation and feedback to help shape the design and development of the tool.
 
-We also recognize capacity building as a key part of involving a diverse open source community. We are doing our best to use accessible language, provide technical and process documents, and offer support to community members with a wide variety of backgrounds and skillsets. 
+We also recognize capacity building as a key part of involving a diverse open source community. We are doing our best to use accessible language, provide technical and process documents, and offer support to community members with a wide variety of backgrounds and skillsets.
 
 ### Community Guidelines
 
-Principles and guidelines for participating in our open source community are can be found in [COMMUNITY_GUIDELINES.md](COMMUNITY_GUIDELINES.md). Please read them before joining or starting a conversation in this repo or one of the channels listed below. All community members and participants are expected to adhere to the community guidelines and code of conduct when participating in community spaces including: code repositories, communication channels and venues, and events. 
+Principles and guidelines for participating in our open source community are can be found in [COMMUNITY_GUIDELINES.md](COMMUNITY_GUIDELINES.md). Please read them before joining or starting a conversation in this repo or one of the channels listed below. All community members and participants are expected to adhere to the community guidelines and code of conduct when participating in community spaces including: code repositories, communication channels and venues, and events.
 
 <!--
 ## Governance
@@ -100,7 +120,7 @@ Information about how the codejson-generator community is governed may be found 
 
 ## Feedback
 
-If you have ideas for how we can improve or add to our capacity building efforts and methods for welcoming people into our community, please let us know at **{contact email}**. If you would like to comment on the tool itself, please let us know by filing an **issue on our GitHub repository.**
+If you have ideas for how we can improve or add to our capacity building efforts and methods for welcoming people into our community, please let us know at opensource@cms.hhs.gov. If you would like to comment on the tool itself, please let us know by filing an **issue on our GitHub repository.**
 
 <!--
 ## Glossary
@@ -117,13 +137,13 @@ questions, just [shoot us an email](mailto:opensource@cms.hhs.gov).
 
 ### Security and Responsible Disclosure Policy
 
-*Submit a vulnerability:* Vulnerability reports can be submitted through [Bugcrowd](https://bugcrowd.com/cms-vdp). Reports may be submitted anonymously. If you share contact information, we will acknowledge receipt of your report within 3 business days.
+_Submit a vulnerability:_ Vulnerability reports can be submitted through [Bugcrowd](https://bugcrowd.com/cms-vdp). Reports may be submitted anonymously. If you share contact information, we will acknowledge receipt of your report within 3 business days.
 
 For more information about our Security, Vulnerability, and Responsible Disclosure Policies, see [SECURITY.md](SECURITY.md).
 
 ### Software Bill of Materials (SBOM)
 
-A Software Bill of Materials (SBOM) is a formal record containing the details and supply chain relationships of various components used in building software. 
+A Software Bill of Materials (SBOM) is a formal record containing the details and supply chain relationships of various components used in building software.
 
 In the spirit of [Executive Order 14028 - Improving the Nation’s Cyber Security](https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/information-technology-category/it-security/executive-order-14028), a SBOM for this repository is provided here: https://github.com/DSACMS/codejson-generator/network/dependencies.
 
