@@ -23,7 +23,7 @@ function transformArrayToOptions(arr) {
 }
 
 // Function that handles validation object needed for each form component
-function determineValidation(fieldName, fieldObject, requiredArray){
+function determineValidation(fieldName, fieldObject, requiredArray) {
 	return {
 		"required": requiredArray.includes(fieldName)
 	}
@@ -207,7 +207,7 @@ function createComponent(fieldName, fieldObject, requiredArray) {
 				description: fieldObject["description"],
 				validate
 			};
-		case "container": 
+		case "container":
 			return {
 				label: fieldName,
 				hideLabel: false,
@@ -223,6 +223,7 @@ function createComponent(fieldName, fieldObject, requiredArray) {
 		case "datagrid":
 			return {
 				label: fieldName,
+				hideLabel: true,
 				reorder: false,
 				addAnotherPosition: "bottom",
 				layoutFixed: false,
@@ -236,9 +237,16 @@ function createComponent(fieldName, fieldObject, requiredArray) {
 				key: fieldName,
 				type: "datagrid",
 				input: true,
-				components: [],
+				components: [
+					{
+						type: "panel",
+						label: fieldName,
+						key: fieldName,
+						components: [],
+					}
+				],
 				validate
-			}; 
+			};
 		default:
 			break;
 	}
@@ -251,37 +259,41 @@ function createFormHeading(title, description) {
 }
 
 // Iterates through each json field and creates component array for Form.io
-function createAllComponents(schema, prefix = ""){
+function createAllComponents(schema, prefix = "") {
 	let components = [];
 
 	if (schema.type === "object" && schema.properties) {
 
 		const items = schema.properties.hasOwnProperty("items") ? schema.properties.items : schema.properties;
-		
+
 		let requiredArray = [];
 		if (schema.hasOwnProperty("required")) {
 			requiredArray = schema.required;
 		}
 
-        for (const [key, value] of Object.entries(items)) {
-            
+		for (const [key, value] of Object.entries(items)) {
+
 			console.log("key at play:", key);
 			const fullKey = prefix ? `${prefix}.${key}` : key;
 
 			let fieldComponent = createComponent(key, value, requiredArray);
 
 			if (fieldComponent.type === "container") {
+				console.log("container key at play:", key);
 				fieldComponent.components = createAllComponents(value, fullKey);
-			} 
+			}
 			else if (fieldComponent.type === "datagrid") {
-				fieldComponent.components = createAllComponents(value.items, fullKey);
+				console.log("datagrid key at play:", key);
+				console.log(fieldComponent.components, "BEFORE checking fieldComponents here");
+				fieldComponent.components[0].components = createAllComponents(value.items, fullKey);
+				console.log(fieldComponent.components, "AFTER checking fieldComponents here");
 			}
 
 			components.push(fieldComponent);
-        }
-    }
+		}
+	}
 
-    return components;
+	return components;
 }
 
 // Creates complete form based on input json schema
@@ -319,8 +331,6 @@ async function createFormComponents() {
 		input: true,
 		tableView: false,
 	});
-
-	
 
 	console.log(components);
 
