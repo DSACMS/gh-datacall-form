@@ -1,33 +1,17 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "HHS Repository and Asset Tracking",
-    "description": "Track repositories, codespaces, and resources funded by HHS offices",
+    "title": "HHS Source Code “Anti-Data Call” — Repository and Asset Tracking",
+    "description": "Track source code repositories, codespaces, and resources funded by HHS offices. This short questionnaire will take <5 minutes per HHS repository.",
     "type": "object",
     "properties": {
         "items": {
-            "First Name": {
-                "type": "string",
-                "description": "First Name"
-            },
-            "Last Name": {
-                "type": "string",
-                "description": "Last Name"
-            },
-            "HHS Email": {
-                "type": "string",
-                "format": "email",
-                "description": "What is your HHS or HHS Division email address?"
-            },
-            "Job Title": {
-                "type": "string",
-                "description": "What is your current job title?"
-            },
             "HHS Division": {
                 "type": "string",
                 "description": "What is your divison within HHS?",
                 "enum": [
                     "Administration for Children and Families (ACF)",
                     "Administration for Community Living (ACL)",
+                    "Administration for a Healthy America (AHA)",
                     "Agency for Healthcare Research and Quality (AHRQ)",
                     "Agency for Toxic Substances and Disease Registry (ATSDR)",
                     "Centers for Disease Control and Prevention (CDC)",
@@ -62,9 +46,9 @@
                 "type": "string",
                 "description": "What Office or Program do you belong to?"
             },
-            "Resource Information": {
+            "HHS Source Code - Resource Information": {
                 "type": "object",
-                "description": "An object containing description of the usage/restrictions regarding the release",
+                "description": "If the Source Code POC differs from the HHS POC completing this questionnaire, please provide your contact information below. ",
                 "properties": {
                     "Basic Information": {
                         "type": "array",
@@ -107,19 +91,15 @@
                                         "Contractor managed"
                                     ]
                                 },
-                                "POC First Name": {
+                                "Source Code POC Name": {
                                     "type": "string",
-                                    "description": "Resource project manager or POC First Name"
+                                    "description": "Resource project manager or POC First and Last Name"
                                 },
-                                "POC Last Name": {
-                                    "type": "string",
-                                    "description": "Resource project manager or POC Last Name"
-                                },
-                                "POC Phone Number": {
+                                "Source Code POC Phone Number": {
                                     "type": "string",
                                     "description": "Resource project manager or POC Phone Number"
                                 },
-                                "POC Email": {
+                                "Source Code POC Email": {
                                     "type": "string",
                                     "format": "email",
                                     "description": "Resource project manager or POC Email"
@@ -129,47 +109,40 @@
                                 "Resource Name",
                                 "Resource Link",
                                 "Date Created",
-                                "Status"
+                                "Status",
+                                "Management Type",
+                                "Source Code POC Name",
+                                "Source Code POC Email"
                             ]
                         }
                     }
                 },
                 "additionalProperties": false,
                 "required": [
-                    "Resource Information"
+                    "HHS Source Code - Resource Information"
                 ]
             },
-            "POC First Name": {
+            "HHS POC": {
                 "type": "string",
-                "description": "Resource project manager or POC First Name"
+                "description": "First and Last Name of HHS POC"
             },
-            "POC Last Name": {
+            "HHS POC Job Title": {
                 "type": "string",
-                "description": "Resource project manager or POC Last Name"
+                "description": "What is your current job title?"
             },
-            "POC Phone Number": {
+            "HHS POC Phone Number": {
                 "type": "string",
-                "description": "Resource project manager or POC Phone Number"
+                "description": "What is your phone number?"
             },
-            "POC Email": {
+            "HHS POC Email": {
                 "type": "string",
                 "format": "email",
-                "description": "Resource project manager or POC Email"
+                "description": "What is your HHS or HHS Division email address?"
             }
         }
     },
     "required": [
-        "First Name",
-        "Last Name",
-        "HHS Email",
-        "Title",
         "HHS Division",
-        "Resource Name",
-        "Resource Link",
-        "Date Created",
-        "Status",
-        "POC First Name",
-        "POC Last Name",
-        "POC Email"
+        "HHS Source Code - Resource Information"
     ]
 }
