@@ -89,20 +89,47 @@
                                 "Status": {
                                     "type": "string",
                                     "description": "Project status",
-                                    "enum": ["Ongoing", "Ended"]
+                                    "enum": [
+                                        "Ongoing",
+                                        "Ended"
+                                    ]
                                 },
                                 "Date Ended": {
                                     "type": "string",
                                     "format": "date-time",
                                     "description": "Date Ended (if applicable)"
+                                },
+                                "Management Type": {
+                                    "type": "string",
+                                    "description": "Management type",
+                                    "enum": [
+                                        "Federally managed",
+                                        "Contractor managed"
+                                    ]
+                                },
+                                "POC First Name": {
+                                    "type": "string",
+                                    "description": "Resource project manager or POC First Name"
+                                },
+                                "POC Last Name": {
+                                    "type": "string",
+                                    "description": "Resource project manager or POC Last Name"
+                                },
+                                "POC Phone Number": {
+                                    "type": "string",
+                                    "description": "Resource project manager or POC Phone Number"
+                                },
+                                "POC Email": {
+                                    "type": "string",
+                                    "format": "email",
+                                    "description": "Resource project manager or POC Email"
                                 }
                             },
                             "required": [
                                 "Resource Name",
                                 "Resource Link",
                                 "Date Created",
-                                "Status",
-                                "Date Ended"
+                                "Status"
                             ]
                         }
                     }
@@ -111,12 +138,6 @@
                 "required": [
                     "Resource Information"
                 ]
-            },
-
-            "Management Type": {
-                "type": "string",
-                "description": "Management type",
-                "enum": ["Federally managed", "Contractor managed"]
             },
             "POC First Name": {
                 "type": "string",
@@ -137,5 +158,18 @@
             }
         }
     },
-    "required": ["First Name", "Last Name", "HHS Email", "Title", "HHS Division", "Resource Name", "Resource Link", "Date Created", "Status", "Management Type", "POC First Name", "POC Last Name", "POC Email"]
+    "required": [
+        "First Name",
+        "Last Name",
+        "HHS Email",
+        "Title",
+        "HHS Division",
+        "Resource Name",
+        "Resource Link",
+        "Date Created",
+        "Status",
+        "POC First Name",
+        "POC Last Name",
+        "POC Email"
+    ]
 }
