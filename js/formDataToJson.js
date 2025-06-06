@@ -73,7 +73,7 @@ async function populateCodeJson(data) {
 	return codeJson;
 }
 
-// Creates code.json object
+// Creates json object
 async function createCodeJson(data) {
 	delete data.submit;
 	const codeJson = await populateCodeJson(data);
@@ -86,7 +86,7 @@ async function createCodeJson(data) {
 	document.getElementById("json-result").value = jsonString;
 }
 
-// Copies code.json to clipboard
+// Copies json to clipboard
 async function copyToClipboard(event){
 	event.preventDefault();
 
@@ -172,12 +172,12 @@ async function createBranchOnProject(projectURL, token)
 }
 
 
-async function addFileToBranch(projectURL, token, codeJSONObj)
+async function addFileToBranch(projectURL, token, JSONObj)
 {
 	const {owner, repo} = getOrgAndRepoArgsGitHub(projectURL);
-	const FILE_PATH = 'code.json'
+	const FILE_PATH = 'code-anti-data-call.json'
 	const createFileApiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${FILE_PATH}`;
-	const encodedContent = btoa(codeJSONObj);
+	const encodedContent = btoa(JSONObj);
 	console.log("Content: ", encodedContent);
 	console.log("Branch: ", NEW_BRANCH);
 
@@ -229,8 +229,8 @@ async function createPR(projectURL, token)
 				'X-GitHub-Api-Version': "2022-11-28"
 			},
 			body: JSON.stringify({
-				title: "Add code.json to Project",
-				body: "Add generated code.json file to project. Code.json was generated via codejson-generator form site.",
+				title: "Add code-anti-data-call.json to Project",
+				body: "Add generated code-anti-data-call.json file to project. code-anti-data-call.json was generated via codejson-generator form site.",
 				head: NEW_BRANCH,
 				base: 'main',
 
@@ -257,25 +257,25 @@ async function createPR(projectURL, token)
 async function createProjectPR(event){
 	event.preventDefault();
 
-	var textArea = document.getElementById("json-result");//Step 1
-	var codeJSONObj = JSON.parse(textArea.value)
+	const textArea = document.getElementById("json-result");
+	const JSONObj = JSON.parse(textArea.value)
 	
 	if('gh_api_key' in window)
 	{
 		var apiKey = window.gh_api_key;
 		
-		if ('repositoryURL' in codeJSONObj)
+		if ('repositoryURL' in JSONObj)
 		{
 			var prCreated = false;
 			//Step 1
-			const branchCreated = await createBranchOnProject(codeJSONObj.repositoryURL,apiKey);
+			const branchCreated = await createBranchOnProject(JSONObj.repositoryURL,apiKey);
 			if (branchCreated)
 			{
-				const fileAdded = await addFileToBranch(codeJSONObj.repositoryURL, apiKey, textArea.value);
+				const fileAdded = await addFileToBranch(JSONObj.repositoryURL, apiKey, textArea.value);
 
 				if (fileAdded)
 				{
-					prCreated = await createPR(codeJSONObj.repositoryURL, apiKey);
+					prCreated = await createPR(JSONObj.repositoryURL, apiKey);
 					if(prCreated)
 					{
 						console.log("PR successfully created!");
@@ -301,7 +301,6 @@ async function createProjectPR(event){
 		console.error("No API key found!");
 		alert("No API Key in submitted data! Please provide an API key");
 	}
-	//console.log(codeJSONObj)
 }
 
 // Triggers local file download
@@ -316,10 +315,153 @@ async function downloadFile(event) {
 	// Create anchor element and create download link
 	const link = document.createElement("a");
 	link.href = URL.createObjectURL(blob);
-	link.download = "code.json";
+	link.download = "code-anti-data-call.json";
 
 	// Trigger the download
 	link.click();
+}
+
+// Creates Issue Title
+function generateIssueTitle(JSONObj) {
+	let now = new Date();
+	let localeString = now.toLocaleString(); 
+
+	const resourceTitle = `${JSONObj["HHS Division"]}, ${localeString}` || `Unknown Name, ${localeString}`;
+	return `HHS Repository and Asset Tracking for: ${resourceTitle}`
+}
+
+// Creates Issue Body
+function generateIssueBody(JSONObj) {
+	const resourceNames = JSONObj['HHS Source Code - Resource Information']['Basic Information']
+		.map(resource => resource['Resource Name']).join(' \n ')
+
+	let body = "## HHS Repository and Asset Tracking Details\n\n";
+
+	body += `### This issue was created using HHS Repository and Asset Tracking form.\n`
+	body += `**The following resources are being tracked:**\n ${resourceNames}\n\n`
+	body += JSON.stringify(JSONObj, null, 2);
+
+	return body;
+}
+
+// Triggers new issue in GitHub
+async function createGitHubIssueForm(event) {
+	event.preventDefault();
+	
+	const textArea = document.getElementById("json-result");
+	const JSONObj = JSON.parse(textArea.value);
+
+	if (!textArea.value) {
+		alert("No data found! Please submit data first.");
+		return;
+	}
+
+	try {
+		JSONObj;
+	} catch (error) {
+		alert("Invalid JSON data. Please check form submission");
+	}
+
+	try {
+		const issueTitle = generateIssueTitle(JSONObj);
+		const issueBody = generateIssueBody(JSONObj);
+
+		const githubIssueURL = createGitHubNewIssueURL(issueTitle, issueBody);
+
+		window.open(githubIssueURL, '_blank');
+
+		alert("GitHub issue form opened in new tab. Please review and click 'Submit new issue' to create it.");
+
+	} catch (error) {
+		console.error("Error opening GitHub issue form:", error);
+		alert("Error opening GitHub issue form:" + error.message)
+	}
+}
+
+// Create GitHub URL
+function createGitHubNewIssueURL(title, body) {
+	const textArea = document.getElementById("json-result");
+	const JSONObj = JSON.parse(textArea.value);
+	const agency = JSONObj["HHS Division"];
+	const match = agency.match(/\(([^)]+)\)/);
+
+	const baseURL = "https://github.com/DSACMS/gh-datacall-form/issues/new";
+	const params = new URLSearchParams({
+		title: title,
+		body: body,
+		labels: ['repository', 'assets', match[1]]
+	});
+
+	return `${baseURL}?${params.toString()}`;
+}
+
+// Creates Auto Issue
+async function createAutoGitHubIssue(event) {
+	event.preventDefault();
+
+	const textArea = document.getElementById("json-result");
+	const JSONObj = JSON.parse(textArea.value);
+
+	if (!('gh_api_key' in window)) {
+		console.error("No API key!");
+		alert("No API key submitted! Please provide an API key.");
+		return;
+	}
+
+	const apiKey = window.gh_api_key;
+
+	try {
+		const issueTitle = generateIssueTitle(JSONObj);
+		const issueBody = generateIssueBody(JSONObj);
+
+		const success = await createIssueOnGitHub(apiKey, issueTitle, issueBody);
+
+		if (success) {
+			console.log("GitHub issue created!");
+			alert("GitHub issue has been created!");
+		}
+	} catch (error) {
+		console.error("Error creating issue:", error);
+		alert("Error creating issue:" + error.message);
+	}
+}
+
+async function createIssueOnGitHub(token, title, body) {
+	const textArea = document.getElementById("json-result");
+	const JSONObj = JSON.parse(textArea.value);
+	const agency = JSONObj["HHS Division"];
+	const match = agency.match(/\(([^)]+)\)/);
+
+	const createIssueAPIURL = "https://api.github.com/repos/DSACMS/gh-datacall-form/issues";
+
+	const response = await fetch(createIssueAPIURL, 
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `token ${token}`,
+				'X-GitHub-Api-Version': "2022-11-28"
+			},
+			body: JSON.stringify({
+				title: title,
+				body: body,
+				labels: ['repository', 'assets', match[1]]
+			})
+		});
+
+		const data = await response.json();
+
+		if (response.ok) {
+			console.log('Issue created successfully:', data);
+			console.log('Issue URL:', data.html_url);
+			alert('Issue created!', data.html_url);
+			return;
+		} else {
+			console.error('Error creating issue:', data);
+			alert('Failed to create issue');
+			return false;
+		}
+
 }
 
 // Triggers email(mailtolink)
@@ -335,8 +477,8 @@ async function emailFile(event) {
 
         const jsonString = JSON.stringify(cleanData, null, 2);
 
-        const subject = "Code.json generator Results";
-        const body = `Hello,\n\nHere are the code.json results:\n\n${jsonString}\n\nThank you!`;
+        const subject = "HHS Source Code Anti-Data Call Results";
+        const body = `Hello,\n\nHere is your response:\n\n${jsonString}\n\nThank you!`;
 
         const recipients = ["opensource@cms.hhs.gov"];
 
@@ -355,4 +497,6 @@ window.createCodeJson = createCodeJson;
 window.copyToClipboard = copyToClipboard;
 window.downloadFile = downloadFile;
 window.createProjectPR = createProjectPR;
+window.createAutoGitHubIssue = createAutoGitHubIssue;
+window.createGitHubIssueForm = createGitHubIssueForm;
 window.emailFile = emailFile;
