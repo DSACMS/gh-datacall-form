@@ -172,12 +172,12 @@ async function createBranchOnProject(projectURL, token)
 }
 
 
-async function addFileToBranch(projectURL, token, codeJSONObj)
+async function addFileToBranch(projectURL, token, JSONObj)
 {
 	const {owner, repo} = getOrgAndRepoArgsGitHub(projectURL);
 	const FILE_PATH = 'code.json'
 	const createFileApiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${FILE_PATH}`;
-	const encodedContent = btoa(codeJSONObj);
+	const encodedContent = btoa(JSONObj);
 	console.log("Content: ", encodedContent);
 	console.log("Branch: ", NEW_BRANCH);
 
@@ -257,25 +257,25 @@ async function createPR(projectURL, token)
 async function createProjectPR(event){
 	event.preventDefault();
 
-	var textArea = document.getElementById("json-result");//Step 1
-	var codeJSONObj = JSON.parse(textArea.value)
+	const textArea = document.getElementById("json-result");
+	const JSONObj = JSON.parse(textArea.value)
 	
 	if('gh_api_key' in window)
 	{
 		var apiKey = window.gh_api_key;
 		
-		if ('repositoryURL' in codeJSONObj)
+		if ('repositoryURL' in JSONObj)
 		{
 			var prCreated = false;
 			//Step 1
-			const branchCreated = await createBranchOnProject(codeJSONObj.repositoryURL,apiKey);
+			const branchCreated = await createBranchOnProject(JSONObj.repositoryURL,apiKey);
 			if (branchCreated)
 			{
-				const fileAdded = await addFileToBranch(codeJSONObj.repositoryURL, apiKey, textArea.value);
+				const fileAdded = await addFileToBranch(JSONObj.repositoryURL, apiKey, textArea.value);
 
 				if (fileAdded)
 				{
-					prCreated = await createPR(codeJSONObj.repositoryURL, apiKey);
+					prCreated = await createPR(JSONObj.repositoryURL, apiKey);
 					if(prCreated)
 					{
 						console.log("PR successfully created!");
@@ -322,21 +322,24 @@ async function downloadFile(event) {
 }
 
 // Creates Issue Title
-function generateIssueTitle(codeJSONObj) {
-	const resourceName = codeJSONObj['Resource Information']['Basic Information'][0]['Resource Name'] || "Unknown Name";
-	return `HHS Repository and Asset Tracking for: ${resourceName}`
+function generateIssueTitle(JSONObj) {
+	let now = new Date();
+	let localeString = now.toLocaleString(); 
+
+	const resourceTitle = `${JSONObj["HHS Division"]}, ${localeString}` || `Unknown Name, ${localeString}`;
+	return `HHS Repository and Asset Tracking for: ${resourceTitle}`
 }
 
 // Creates Issue Body
-function generateIssueBody(codeJSONObj) {
-	const resourceNames = codeJSONObj['Resource Information']['Basic Information']
+function generateIssueBody(JSONObj) {
+	const resourceNames = JSONObj['Resource Information']['Basic Information']
 		.map(resource => resource['Resource Name']).join(' \n ')
 
 	let body = "## HHS Repository and Asset Tracking Details\n\n";
 
 	body += `### This issue was created using HHS Repository and Asset Tracking form.\n`
 	body += `**The following resources are being tracked:**\n ${resourceNames}\n\n`
-	body += JSON.stringify(codeJSONObj, null, 2);
+	body += JSON.stringify(JSONObj, null, 2);
 
 	return body;
 }
@@ -346,7 +349,7 @@ async function createGitHubIssueForm(event) {
 	event.preventDefault();
 	
 	const textArea = document.getElementById("json-result");
-	const codeJSONObj = JSON.parse(textArea.value);
+	const JSONObj = JSON.parse(textArea.value);
 
 	if (!textArea.value) {
 		alert("No data found! Please submit data first.");
@@ -354,14 +357,14 @@ async function createGitHubIssueForm(event) {
 	}
 
 	try {
-		codeJSONObj;
+		JSONObj;
 	} catch (error) {
 		alert("Invalid JSON data. Please check form submission");
 	}
 
 	try {
-		const issueTitle = generateIssueTitle(codeJSONObj);
-		const issueBody = generateIssueBody(codeJSONObj);
+		const issueTitle = generateIssueTitle(JSONObj);
+		const issueBody = generateIssueBody(JSONObj);
 
 		const githubIssueURL = createGitHubNewIssueURL(issueTitle, issueBody);
 
@@ -381,7 +384,7 @@ function createGitHubNewIssueURL(title, body) {
 	const params = new URLSearchParams({
 		title: title,
 		body: body,
-		labels: 'Repository and asset tracking'
+		labels: ['repository', 'assets', 'agency']
 	});
 
 	return `${baseURL}?${params.toString()}`;
@@ -392,7 +395,7 @@ async function createAutoGitHubIssue(event) {
 	event.preventDefault();
 
 	const textArea = document.getElementById("json-result");
-	const codeJSONObj = JSON.parse(textArea.value);
+	const JSONObj = JSON.parse(textArea.value);
 
 	if (!('gh_api_key' in window)) {
 		console.error("No API key!");
@@ -403,8 +406,8 @@ async function createAutoGitHubIssue(event) {
 	const apiKey = window.gh_api_key;
 
 	try {
-		const issueTitle = generateIssueTitle(codeJSONObj);
-		const issueBody = generateIssueBody(codeJSONObj);
+		const issueTitle = generateIssueTitle(JSONObj);
+		const issueBody = generateIssueBody(JSONObj);
 
 		const success = await createIssueOnGitHub(apiKey, issueTitle, issueBody);
 
@@ -432,7 +435,7 @@ async function createIssueOnGitHub(token, title, body) {
 			body: JSON.stringify({
 				title: title,
 				body: body,
-				labels: ['repository', 'assets']
+				labels: ['repository', 'assets', 'agency']
 			})
 		});
 
