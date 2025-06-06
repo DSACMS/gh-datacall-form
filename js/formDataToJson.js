@@ -376,7 +376,7 @@ async function createGitHubIssueForm(event) {
 	}
 }
 
-//Create GitHub URL
+// Create GitHub URL
 function createGitHubNewIssueURL(title, body) {
 	const baseURL = "https://github.com/DSACMS/gh-datacall-form/issues/new";
 	const params = new URLSearchParams({
@@ -386,6 +386,72 @@ function createGitHubNewIssueURL(title, body) {
 	});
 
 	return `${baseURL}?${params.toString()}`;
+}
+
+// Creates Auto Issue
+async function createAutoGitHubIssue(event) {
+	event.preventDefault();
+
+	const textArea = document.getElementById("json-result");
+	const codeJSONObj = JSON.parse(textArea.value);
+
+	if (!('gh_api_key' in window)) {
+		console.error("No API key!");
+		alert("No API key submitted! Please provide an API key.");
+		return;
+	}
+
+	const apiKey = window.gh_api_key;
+
+	try {
+		// const { owner, repo } = getOrgAndRepoArgsGitHub("https://github.com/DSACMS/gh-datacall-form/issues/new");
+		// const baseURL = "https://github.com/DSACMS/gh-datacall-form/issues/new";
+		
+		const issueTitle = generateIssueTitle(codeJSONObj);
+		const issueBody = generateIssueBody(codeJSONObj);
+
+		const success = await createIssueOnGitHub(apiKey, issueTitle, issueBody);
+
+		if (success) {
+			console.log("GitHub issue created!");
+			alert("GitHub issue has been created!");
+		}
+	} catch (error) {
+		console.error("Error creating issue:", error);
+		alert("Error creating issue:" + error.message);
+	}
+}
+
+async function createIssueOnGitHub(token, title, body) {
+	const createIssueAPIURL = "https://api.github.com/repos/DSACMS/gh-datacall-form/issues";
+
+	const response = await fetch(createIssueAPIURL, 
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `token ${token}`,
+				'X-GitHub-Api-Version': "2022-11-28"
+			},
+			body: JSON.stringify({
+				title: title,
+				body: body,
+				labels: ['repository', 'assets']
+			})
+		});
+
+		const data = await response.json();
+
+		if (response.ok) {
+			console.log('Issue created successfully:', data);
+			console.log('Issue URL:', data.html_url);
+			return;
+		} else {
+			console.error('Error creating issue:', data);
+			alert('Failed to create issue');
+			return false;
+		}
+
 }
 
 // Triggers email(mailtolink)
@@ -421,5 +487,6 @@ window.createCodeJson = createCodeJson;
 window.copyToClipboard = copyToClipboard;
 window.downloadFile = downloadFile;
 window.createProjectPR = createProjectPR;
+window.createAutoGitHubIssue = createAutoGitHubIssue;
 window.createGitHubIssueForm = createGitHubIssueForm;
 window.emailFile = emailFile;
