@@ -73,7 +73,7 @@ async function populateCodeJson(data) {
 	return codeJson;
 }
 
-// Creates code.json object
+// Creates json object
 async function createCodeJson(data) {
 	delete data.submit;
 	const codeJson = await populateCodeJson(data);
@@ -86,7 +86,7 @@ async function createCodeJson(data) {
 	document.getElementById("json-result").value = jsonString;
 }
 
-// Copies code.json to clipboard
+// Copies json to clipboard
 async function copyToClipboard(event){
 	event.preventDefault();
 
@@ -175,7 +175,7 @@ async function createBranchOnProject(projectURL, token)
 async function addFileToBranch(projectURL, token, JSONObj)
 {
 	const {owner, repo} = getOrgAndRepoArgsGitHub(projectURL);
-	const FILE_PATH = 'code.json'
+	const FILE_PATH = 'code-anti-data-call.json'
 	const createFileApiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${FILE_PATH}`;
 	const encodedContent = btoa(JSONObj);
 	console.log("Content: ", encodedContent);
@@ -229,8 +229,8 @@ async function createPR(projectURL, token)
 				'X-GitHub-Api-Version': "2022-11-28"
 			},
 			body: JSON.stringify({
-				title: "Add code.json to Project",
-				body: "Add generated code.json file to project. Code.json was generated via codejson-generator form site.",
+				title: "Add code-anti-data-call.json to Project",
+				body: "Add generated code-anti-data-call.json file to project. code-anti-data-call.json was generated via codejson-generator form site.",
 				head: NEW_BRANCH,
 				base: 'main',
 
@@ -315,7 +315,7 @@ async function downloadFile(event) {
 	// Create anchor element and create download link
 	const link = document.createElement("a");
 	link.href = URL.createObjectURL(blob);
-	link.download = "code.json";
+	link.download = "code-anti-data-call.json";
 
 	// Trigger the download
 	link.click();
@@ -332,7 +332,7 @@ function generateIssueTitle(JSONObj) {
 
 // Creates Issue Body
 function generateIssueBody(JSONObj) {
-	const resourceNames = JSONObj['Resource Information']['Basic Information']
+	const resourceNames = JSONObj['HHS Source Code - Resource Information']['Basic Information']
 		.map(resource => resource['Resource Name']).join(' \n ')
 
 	let body = "## HHS Repository and Asset Tracking Details\n\n";
@@ -380,11 +380,16 @@ async function createGitHubIssueForm(event) {
 
 // Create GitHub URL
 function createGitHubNewIssueURL(title, body) {
+	const textArea = document.getElementById("json-result");
+	const JSONObj = JSON.parse(textArea.value);
+	const agency = JSONObj["HHS Division"];
+	const match = agency.match(/\(([^)]+)\)/);
+
 	const baseURL = "https://github.com/DSACMS/gh-datacall-form/issues/new";
 	const params = new URLSearchParams({
 		title: title,
 		body: body,
-		labels: ['repository', 'assets', 'agency']
+		labels: ['repository', 'assets', match[1]]
 	});
 
 	return `${baseURL}?${params.toString()}`;
@@ -422,6 +427,11 @@ async function createAutoGitHubIssue(event) {
 }
 
 async function createIssueOnGitHub(token, title, body) {
+	const textArea = document.getElementById("json-result");
+	const JSONObj = JSON.parse(textArea.value);
+	const agency = JSONObj["HHS Division"];
+	const match = agency.match(/\(([^)]+)\)/);
+
 	const createIssueAPIURL = "https://api.github.com/repos/DSACMS/gh-datacall-form/issues";
 
 	const response = await fetch(createIssueAPIURL, 
@@ -435,7 +445,7 @@ async function createIssueOnGitHub(token, title, body) {
 			body: JSON.stringify({
 				title: title,
 				body: body,
-				labels: ['repository', 'assets', 'agency']
+				labels: ['repository', 'assets', match[1]]
 			})
 		});
 
@@ -444,6 +454,7 @@ async function createIssueOnGitHub(token, title, body) {
 		if (response.ok) {
 			console.log('Issue created successfully:', data);
 			console.log('Issue URL:', data.html_url);
+			alert('Issue created!', data.html_url);
 			return;
 		} else {
 			console.error('Error creating issue:', data);
@@ -466,8 +477,8 @@ async function emailFile(event) {
 
         const jsonString = JSON.stringify(cleanData, null, 2);
 
-        const subject = "Code.json generator Results";
-        const body = `Hello,\n\nHere are the code.json results:\n\n${jsonString}\n\nThank you!`;
+        const subject = "HHS Source Code Anti-Data Call Results";
+        const body = `Hello,\n\nHere is your response:\n\n${jsonString}\n\nThank you!`;
 
         const recipients = ["opensource@cms.hhs.gov"];
 
