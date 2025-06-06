@@ -322,6 +322,72 @@ async function downloadFile(event) {
 	link.click();
 }
 
+// Creates Issue Title
+function generateIssueTitle(codeJSONObj) {
+	const resourceName = codeJSONObj['Resource Information']['Basic Information'][0]['Resource Name'] || "Unknown Name";
+	return `HHS Repository and Asset Tracking for: ${resourceName}`
+}
+
+// Creates Issue Body
+function generateIssueBody(codeJSONObj) {
+	const resourceNames = codeJSONObj['Resource Information']['Basic Information']
+		.map(resource => resource['Resource Name']).join(' \n ')
+
+	let body = "## HHS Repository and Asset Tracking Details\n\n";
+
+	body += `### This issue was created using HHS Repository and Asset Tracking form.\n`
+	body += `**The following resources are being tracked:**\n ${resourceNames}\n\n`
+	body += JSON.stringify(codeJSONObj, null, 2);
+
+	return body;
+}
+
+// Triggers new issue in GitHub
+async function createGitHubIssueForm(event) {
+	event.preventDefault();
+	
+	const textArea = document.getElementById("json-result");
+	const codeJSONObj = JSON.parse(textArea.value);
+
+	if (!textArea.value) {
+		alert("No data found! Please submit data first.");
+		return;
+	}
+
+	try {
+		codeJSONObj;
+	} catch (error) {
+		alert("Invalid JSON data. Please check form submission");
+	}
+
+	try {
+		const issueTitle = generateIssueTitle(codeJSONObj);
+		const issueBody = generateIssueBody(codeJSONObj);
+
+		const githubIssueURL = createGitHubNewIssueURL(issueTitle, issueBody);
+
+		window.open(githubIssueURL, '_blank');
+
+		alert("GitHub issue form opened in new tab. Please review and click 'Submit new issue' to create it.");
+
+	} catch (error) {
+		console.error("Error opening GitHub issue form:", error);
+		alert("Error opening GitHub issue form:" + error.message)
+	}
+}
+
+//Create GitHub URL
+function createGitHubNewIssueURL(title, body) {
+	const baseURL = "https://github.com/DSACMS/gh-datacall-form/issues/new";
+	const params = new URLSearchParams({
+		title: title,
+		body: body,
+		labels: 'Repository and asset tracking'
+	});
+
+	return `${baseURL}?${params.toString()}`;
+}
+
 // Triggers email(mailtolink)
 async function emailFile(event) {
 	event.preventDefault();
@@ -355,4 +421,5 @@ window.createCodeJson = createCodeJson;
 window.copyToClipboard = copyToClipboard;
 window.downloadFile = downloadFile;
 window.createProjectPR = createProjectPR;
+window.createGitHubIssueForm = createGitHubIssueForm;
 window.emailFile = emailFile;
