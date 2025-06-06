@@ -301,7 +301,6 @@ async function createProjectPR(event){
 		console.error("No API key found!");
 		alert("No API Key in submitted data! Please provide an API key");
 	}
-	//console.log(codeJSONObj)
 }
 
 // Triggers local file download
@@ -404,9 +403,6 @@ async function createAutoGitHubIssue(event) {
 	const apiKey = window.gh_api_key;
 
 	try {
-		// const { owner, repo } = getOrgAndRepoArgsGitHub("https://github.com/DSACMS/gh-datacall-form/issues/new");
-		// const baseURL = "https://github.com/DSACMS/gh-datacall-form/issues/new";
-		
 		const issueTitle = generateIssueTitle(codeJSONObj);
 		const issueBody = generateIssueBody(codeJSONObj);
 
