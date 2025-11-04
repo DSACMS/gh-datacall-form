@@ -1,22 +1,33 @@
 {
-  "name": "codejson-generator",
-  "description": "Form to generate a CMS code.json",
-  "longDescription": "A web form where project teams fill out information about their project and creates a completed code.json for local download to add to repositories.",
+  "name": "gh-datacall-form",
+  "version": "",
+  "description": "Form to generate a GitHub Data Call",
+  "longDescription": "A web-based form questionaire to assist HHS with systematically tracking, cataloging, and managing source code repositories, development codespaces, and digital resources that are funded, sponsored, or supported by the agency.",
   "status": "Production",
   "permissions": {
-    "license": [
+    "licenses": [
       {
-        "name": "CC0 1.0 Universal",
+        "name": "CC0-1.0",
         "URL": "https://github.com/DSACMS/codejson-generator/blob/main/LICENSE"
       }
     ],
-    "usageType": "openSource",
+    "usageType": ["openSource"],
     "exemptionText": ""
   },
   "organization": "Centers for Medicare & Medicaid Services",
-  "repositoryURL": "https://github.com/DSACMS/codejson-generator",
+  "repositoryURL": "https://github.com/DSACMS/gh-datacall-form",
+  "repositoryHost": "github.com/DSACMS",
+  "repositoryVisibility": "public",
+  "homepageURL": "",
+  "downloadURL": "",
+  "disclaimerURL": "",
+  "disclaimerText": "",
   "vcs": "git",
-  "laborHours": 3347,
+  "laborHours": 3611,
+  "reuseFrequency": {
+    "forks": 0,
+    "clones": 0
+  },
   "platforms": [
     "web"
   ],
@@ -32,10 +43,15 @@
     "CSS"
   ],
   "maintenance": "internal",
+  "contractNumber": [],
+  "SBOM": "https://github.com/DSACMS/gh-datacall-form/network/dependencies",
+  "relatedCode": [],
+  "reusedCode": [],
+  "partners": [],
   "date": {
-    "created": "2024-11-22T16:30:29Z",
-    "lastModified": "2025-02-13T20:05:39Z",
-    "metaDataLastUpdated": "2025-02-14T15:06:13.678Z"
+    "created": "2025-06-05T15:26:50Z",
+    "lastModified": "2025-11-04T18:11:13Z",
+    "metadataLastUpdated": "2025-11-04T18:12:03.276Z"
   },
   "tags": [
     "codejson",
@@ -46,17 +62,20 @@
     "email": "opensource@cms.hhs.gov",
     "name": "CMS Open Source Team"
   },
+  "feedbackMechanism": "https://github.com/DSACMS/gh-datacall-form/issues",
+  "AIUseCaseID": "0",
   "localisation": false,
   "repositoryType": "website",
   "userInput": false,
-  "fismaLevel": "Low",
+  "fismaLevel": "low",
   "group": "CMS/OA/DSAC",
+  "projects": [],
+  "systems": [],
   "subsetInHealthcare": [
-    "Operational"
+    "operational"
   ],
   "userType": [
-    "Government"
+    "government"
   ],
-  "repositoryHost": "github.com/DSACMS",
   "maturityModelTier": 3
 }
